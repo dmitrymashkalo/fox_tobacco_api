@@ -4,9 +4,10 @@ from sqlalchemy.future import select
 from starlette.status import HTTP_200_OK
 
 from app.db.db import get_db
-from app.models.brand import Brand, BrandCreate, BrandUpdate, BrandDelete
+from app.models.brand import Brand, BrandCreate, BrandUpdate
 
 router = APIRouter(prefix="/brands", tags=["Brands"])
+
 
 @router.get("/")
 async def get_brands(db: AsyncSession = Depends(get_db)):

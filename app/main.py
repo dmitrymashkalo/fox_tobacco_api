@@ -1,13 +1,15 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from app.db.db import engine, Base
-from app.routers import brand
+from app.routers import brand, flavor
 import uvicorn
 
 app = FastAPI()
 
 # routers
 app.include_router(brand.router)
+app.include_router(flavor.router)
+
 
 @app.on_event("startup")
 async def startup():
