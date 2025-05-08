@@ -1,12 +1,19 @@
-from fastapi import FastAPI, Depends
-from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.db import get_db
+from fastapi import FastAPI
+from app.db.db import engine, Base
+from app.routers import brand
+import uvicorn
 
 app = FastAPI()
 
+# routers
+app.include_router(brand.router)
 
-@app.get("/")
-async def read_root(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(text("SELECT 'Hello from DB'"))
-    return {"message": result.scalar()}
+@app.on_event("startup")
+async def startup():
+    # Create all tables
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+
+if __name__ == "__main__":
+    uvicorn.run("app.main:app", reload=True)
