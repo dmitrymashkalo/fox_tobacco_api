@@ -23,7 +23,7 @@ class Flavor(Base):
     price = Column(Integer, nullable=False)
     description = Column(String, nullable=False)
     available_qty = Column(Integer, nullable=False)
-    photo_url = Column(String, nullable=True)
+    image_url = Column(String, nullable=True)
 
     brand_id = Column(String, ForeignKey("brands.brand_id"), nullable=False)
     brand = relationship("Brand", back_populates="flavors")
