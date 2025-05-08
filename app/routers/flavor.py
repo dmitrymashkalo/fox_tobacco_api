@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.db.db import get_db
-from app.models.brand import Flavor, Brand, FlavorCreate
+from app.models.brand import Flavor, Brand, FlavorCreate, FlavorUpdate
 
 router = APIRouter(prefix="/flavors", tags=["Flavors"])
 
@@ -37,7 +37,7 @@ async def add_flavor(brand_id: str, flavor: FlavorCreate, db: AsyncSession = Dep
         price = flavor.price,
         description = flavor.description,
         available_qty = flavor.available_qty,
-        photo_url = flavor.photo_url,
+        image_url = flavor.photo_url,
         brand_id = brand_id
     )
 
@@ -45,3 +45,47 @@ async def add_flavor(brand_id: str, flavor: FlavorCreate, db: AsyncSession = Dep
     await db.commit()
 
     return {"message": "Flavor added"}
+
+
+@router.put("/{flavor_id}", status_code = status.HTTP_200_OK)
+async def update_flavor(flavor_id: str, flavor: FlavorUpdate, db: AsyncSession = Depends(get_db)):
+    """ Update existing flavor """
+
+    # get existing flavor by id
+    stmt = select(Flavor).where(Flavor.flavor_id == flavor_id)
+    result = await db.execute(stmt)
+    existing_flavor = result.scalar_one_or_none()
+
+    if not existing_flavor:
+        raise HTTPException(status_code=404, detail="Flavor with this ID doesn't exist")
+
+    # update info
+    existing_flavor.name = flavor.name
+    existing_flavor.weight = flavor.weight
+    existing_flavor.price = flavor.price
+    existing_flavor.description = flavor.description
+    existing_flavor.available_qty = flavor.available_qty
+    existing_flavor.image_url = flavor.image_url
+
+    db.add(existing_flavor)
+    await db.commit()
+
+    return {"message": "Flavor updated"}
+
+
+@router.delete("/{flavor_id}", status_code=status.HTTP_200_OK)
+async def delete_flavor(flavor_id: str, db: AsyncSession = Depends(get_db)):
+    """ Delete existing flavor """
+
+    # get existing flavor by id
+    stmt = select(Flavor).where(Flavor.flavor_id == flavor_id)
+    result = await db.execute(stmt)
+    existing_flavor = result.scalar_one_or_none()
+
+    if not existing_flavor:
+        raise HTTPException(status_code=404, detail="Flavor with this ID doesn't exist")
+
+    await db.delete(existing_flavor)
+    await db.commit()
+
+    return {"message": "Flavor deleted"}

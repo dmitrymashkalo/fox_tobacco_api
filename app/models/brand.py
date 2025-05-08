@@ -47,4 +47,13 @@ class FlavorCreate(BaseModel):
     price: int
     description: str
     available_qty: int
-    photo_url: Union[HttpUrl, None] = None
+    image_url: Union[HttpUrl, None] = None
+
+
+class FlavorUpdate(BaseModel):
+    name: str
+    weight: str
+    price: int
+    description: str
+    available_qty: int
+    image_url: Union[HttpUrl, None] = None
