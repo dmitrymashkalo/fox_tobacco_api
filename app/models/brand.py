@@ -16,3 +16,12 @@ class BrandCreate(BaseModel):
     brand_id: str
     name: str
     image_url: Union[HttpUrl, None] = None
+
+
+class BrandUpdate(BaseModel):
+    name: str
+    image_url: Union[HttpUrl, None] = None
+
+
+class BrandDelete(BaseModel):
+    brand_id: str
