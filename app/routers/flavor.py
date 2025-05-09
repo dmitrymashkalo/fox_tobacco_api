@@ -12,6 +12,15 @@ router = APIRouter(prefix="/flavors", tags=["Flavors"])
 async def get_flavor(db: AsyncSession = Depends(get_db)):
     """ Get all flavors from db """
     flavors = await db.execute(select(Flavor))
+
+    return {"flavors": [flavor for flavor in flavors.scalars()]}
+
+
+@router.get("/with_qty")
+async def get_flavor_with_qty(db: AsyncSession = Depends(get_db)):
+    """ Get all flavors where qty > 0 from db """
+    flavors = await db.execute(select(Flavor).where(Flavor.available_qty > 0))
+
     return {"flavors": [flavor for flavor in flavors.scalars()]}
 
 

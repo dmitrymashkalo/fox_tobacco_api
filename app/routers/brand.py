@@ -13,6 +13,7 @@ router = APIRouter(prefix="/brands", tags=["Brands"])
 async def get_brands(db: AsyncSession = Depends(get_db)):
     """ Get all brands from db """
     brands = await db.execute(select(Brand))
+
     return {"brands": [brand for brand in brands.scalars()]}
 
 
@@ -21,6 +22,7 @@ async def get_brands_with_flavor(db: AsyncSession = Depends(get_db)):
     """ Get all not empty brands """
     stmt = await db.execute(select(Brand).join(Flavor).distinct())
     brands = stmt.scalars().all()
+
     return brands
 
 
