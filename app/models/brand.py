@@ -23,6 +23,7 @@ class Flavor(Base):
     price = Column(Integer, nullable=False)
     description = Column(String, nullable=False)
     available_qty = Column(Integer, nullable=False)
+    #TODO: reserved_qty
     image_url = Column(String, nullable=True)
 
     brand_id = Column(String, ForeignKey("brands.brand_id"), nullable=False)
@@ -56,4 +57,5 @@ class FlavorUpdate(BaseModel):
     price: int
     description: str
     available_qty: int
+    #TODO: reserved_qty
     image_url: Union[HttpUrl, None] = None

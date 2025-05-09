@@ -9,7 +9,7 @@ from app.models.brand import Brand, BrandCreate, BrandUpdate, Flavor
 router = APIRouter(prefix="/brands", tags=["Brands"])
 
 
-@router.get("/")
+@router.get("/all")
 async def get_brands(db: AsyncSession = Depends(get_db)):
     """ Get all brands from db """
     brands = await db.execute(select(Brand))
@@ -23,7 +23,7 @@ async def get_brands_with_flavor(db: AsyncSession = Depends(get_db)):
     stmt = await db.execute(select(Brand).join(Flavor).distinct())
     brands = stmt.scalars().all()
 
-    return brands
+    return {"brands": brands}
 
 
 @router.post("/", status_code = status.HTTP_201_CREATED)

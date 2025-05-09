@@ -8,7 +8,7 @@ from app.models.brand import Flavor, Brand, FlavorCreate, FlavorUpdate
 router = APIRouter(prefix="/flavors", tags=["Flavors"])
 
 
-@router.get("/")
+@router.get("/all")
 async def get_flavor(db: AsyncSession = Depends(get_db)):
     """ Get all flavors from db """
     flavors = await db.execute(select(Flavor))
@@ -16,10 +16,10 @@ async def get_flavor(db: AsyncSession = Depends(get_db)):
     return {"flavors": [flavor for flavor in flavors.scalars()]}
 
 
-@router.get("/with_qty")
-async def get_flavor_with_qty(db: AsyncSession = Depends(get_db)):
-    """ Get all flavors where qty > 0 from db """
-    flavors = await db.execute(select(Flavor).where(Flavor.available_qty > 0))
+@router.get("/{brand_id}")
+async def get_flavor_with_qty(brand_id: str, db: AsyncSession = Depends(get_db)):
+    """ Get all flavors by brand id where qty > 0 from db """
+    flavors = await db.execute(select(Flavor).join(Brand).where(Flavor.available_qty > 0))
 
     return {"flavors": [flavor for flavor in flavors.scalars()]}
 
