@@ -16,12 +16,25 @@ async def get_flavor(db: AsyncSession = Depends(get_db)):
     return {"flavors": [flavor for flavor in flavors.scalars()]}
 
 
-@router.get("/{brand_id}")
-async def get_flavor_with_qty(brand_id: str, db: AsyncSession = Depends(get_db)):
+@router.get("/brand/{brand_id}")
+async def get_flavors_with_qty(brand_id: str, db: AsyncSession = Depends(get_db)):
     """ Get all flavors by brand id where qty > 0 from db """
     flavors = await db.execute(select(Flavor).where(Flavor.available_qty > 0).join(Brand).where(Brand.brand_id==brand_id))
 
     return {"flavors": [flavor for flavor in flavors.scalars()]}
+
+
+@router.get("/flavor/{flavor_id}")
+async def get_flavor_details(flavor_id: str, db: AsyncSession = Depends(get_db)):
+    """ Get flavor by flavor id """
+    existing_flavor = await db.execute(select(Flavor).where(Flavor.flavor_id == flavor_id))
+
+    if not existing_flavor:
+        raise HTTPException(status_code=404, detail="Flavor with this ID doesn't exist")
+
+    flavor = existing_flavor.scalars().first()
+
+    return {"flavor": flavor}
 
 
 @router.post("/{brand_id}", status_code = status.HTTP_201_CREATED)
@@ -68,13 +81,10 @@ async def update_flavor(flavor_id: str, flavor: FlavorUpdate, db: AsyncSession =
     if not existing_flavor:
         raise HTTPException(status_code=404, detail="Flavor with this ID doesn't exist")
 
-    # update info
-    existing_flavor.name = flavor.name
-    existing_flavor.weight = flavor.weight
-    existing_flavor.price = flavor.price
-    existing_flavor.description = flavor.description
-    existing_flavor.available_qty = flavor.available_qty
-    existing_flavor.image_url = flavor.image_url
+    update_data = flavor.model_dump(exclude_unset=True)
+
+    for field, value in update_data.items():
+        setattr(existing_flavor, field, value)
 
     db.add(existing_flavor)
     await db.commit()

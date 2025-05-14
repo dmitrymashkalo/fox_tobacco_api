@@ -2,7 +2,7 @@ from app.db.db import Base
 from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from pydantic import BaseModel, HttpUrl
-from typing import Union
+from typing import Union, Optional
 
 
 class Brand(Base):
@@ -52,10 +52,10 @@ class FlavorCreate(BaseModel):
 
 
 class FlavorUpdate(BaseModel):
-    name: str
-    weight: str
-    price: int
-    description: str
-    available_qty: int
-    #TODO: reserved_qty
-    image_url: Union[HttpUrl, None] = None
+    name: Optional[str] = None
+    weight: Optional[str] = None
+    price: Optional[int] = None
+    description: Optional[str] = None
+    available_qty: Optional[int] = None
+    # TODO: reserved_qty
+    image_url: Optional[str] = None
