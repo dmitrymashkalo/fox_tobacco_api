@@ -20,7 +20,7 @@ async def get_brands(db: AsyncSession = Depends(get_db)):
 @router.get("/with_flavors")
 async def get_brands_with_flavor(db: AsyncSession = Depends(get_db)):
     """ Get all not empty brands """
-    stmt = await db.execute(select(Brand).join(Flavor).distinct())
+    stmt = await db.execute(select(Brand).join(Flavor).where(Flavor.available_qty > 0).distinct())
     brands = stmt.scalars().all()
 
     return {"brands": brands}
