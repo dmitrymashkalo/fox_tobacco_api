@@ -40,7 +40,7 @@ async def add_brand(brand: BrandCreate, db: AsyncSession = Depends(get_db)):
     new_brand = Brand(
         brand_id=brand.brand_id,
         name=brand.name,
-        image_url=brand.image_url
+        image_url=str(brand.image_url) if brand.image_url else None
     )
     db.add(new_brand)
     await db.commit()
@@ -62,7 +62,7 @@ async def update_brand(brand_id: str, brand: BrandUpdate, db: AsyncSession = Dep
 
     # update info
     existing_brand.name = brand.name
-    existing_brand.image_url = brand.image_url
+    existing_brand.image_url = str(brand.image_url) if brand.image_url else None
 
     db.add(existing_brand)
     await db.commit()

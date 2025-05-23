@@ -23,7 +23,7 @@ class Flavor(Base):
     price = Column(Integer, nullable=False)
     description = Column(String, nullable=False)
     available_qty = Column(Integer, nullable=False)
-    #TODO: reserved_qty
+    reserved_qty = Column(Integer, nullable=True)
     image_url = Column(String, nullable=True)
 
     brand_id = Column(String, ForeignKey("brands.brand_id"), nullable=False)
@@ -57,5 +57,5 @@ class FlavorUpdate(BaseModel):
     price: Optional[int] = None
     description: Optional[str] = None
     available_qty: Optional[int] = None
-    # TODO: reserved_qty
+    reserved_qty: Optional[int] = None
     image_url: Optional[str] = None

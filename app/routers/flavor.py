@@ -59,7 +59,8 @@ async def add_flavor(brand_id: str, flavor: FlavorCreate, db: AsyncSession = Dep
         price = flavor.price,
         description = flavor.description,
         available_qty = flavor.available_qty,
-        image_url = flavor.image_url,
+        reserved_qty = flavor.reserved_qty if flavor.reserved_qty else None,
+        image_url = str(flavor.image_url) if flavor.image_url else None,
         brand_id = brand_id
     )
 
